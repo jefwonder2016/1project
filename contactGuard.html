@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Us</title>
+ <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      width: 90%;
+    }
+
+    table, th, td {
+      border: 8px solid #ccc;
+    }
+
+    th, td {
+      padding: 20px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f9f9f9;
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="button"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 50px;
+      cursor: pointer;
+    }
+
+    input[type="button"]:hover {
+      background-color: #45a049;
+    }
+
+  </style>
+</head>
+<body>
+  <TABLE BORDER= "0">
+  <TR BGCOLOR= "Tan">
+  <TD COLSPAN= "3"> <h1>Contact Us</h1>
+    <form id="contactForm">
+        <table>
+            <tr>
+                <td>1) Full Name:</td>
+                <td><input type="text" name="fullName" placeholder="Enter Your Name"></td>
+            </tr>
+            <tr>
+                <td>2) Email:</td>
+                <td><input type="text" name="email" placeholder="Enter Correct Email Format"></td>
+            </tr>
+            <tr>
+                <td>3) Contact No:</td>
+                <td><input type="text" name="contactNo" placeholder="Enter Your Phone Number"></td>
+            </tr>
+            <tr>
+                <td>4) Detailed Enquiry:</td>
+                <td><textarea name="enquiry" placeholder="Type your enquiries here..."></textarea></td>
+            </tr>
+        </table>
+       
+           <input type="button" value="Submit" onclick="submitForm()">
+           <input type="button" value="Cancel" onclick="clearForm()">
+           <a href="gtmsGuard.html"><button type="button">Home</button></a>  
+        
+       </form>
+
+    <script>
+        function submitForm() {
+            var fullName = document.forms["contactForm"]["fullName"].value;
+            var email = document.forms["contactForm"]["email"].value;
+            var contactNo = document.forms["contactForm"]["contactNo"].value;
+            var enquiry = document.forms["contactForm"]["enquiry"].value;
+
+            if (fullName && email && contactNo && enquiry) {
+                alert("Congratulation...!!!!\nName: " + fullName + "\nEmail: " + email + "\nContact No: " + contactNo + "\nDetailed Enquiry: " + enquiry);
+            } else {
+                alert("From this page! PLEASE ENTER THE VALUES");
+            }
+        }
+
+        function clearForm() {
+            document.getElementById("contactForm").reset();
+        }
+    </script>
+</body>
+</html>

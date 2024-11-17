@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Station</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Toolbar styling */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .toolbar button:hover {
+            background-color: #45a049;
+        }
+
+        .toolbar button:focus {
+            outline: none;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Highlight selected row */
+        tr.selected {
+            background-color: #d1ecf1 !important;
+            color: #0c5460;
+        }
+
+        /* Button inside the table */
+        button.icon-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        button.icon-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive styling */
+        @media screen and (max-width: 768px) {
+            .toolbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Toolbar for Add, Modify, Delete, Save, and Exit -->
+    <div class="toolbar">
+        <button id="add">Add</button>
+        <button id="modify">Modify</button>
+        <button id="delete">Delete</button>
+        <button id="save">Save</button>
+        <button id="exit">Exit</button>
+    </div>
+
+    <!-- Table for selecting checkpoints -->
+    <h2>Checkpoints</h2>
+    <table id="checkpointTable">
+        <thead>
+        <tr>
+            <th>Checkbox</th>
+            <th>Checkpoint Name</th>
+            <th>Description</th>
+            <th>Chip ID</th>
+        </tr>
+        </thead>
+        <tbody id="checkpointTableBody">
+        <!-- Rows will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <!-- Table for displaying route stations -->
+    <h2>Route Stations</h2>
+    <table id="routeStationTable">
+        <thead>
+        <tr>
+            <th>No</th>
+            <th>Route Station Name</th>
+            <th>Checkpoints</th>
+        </tr>
+        </thead>
+        <tbody id="routeStationTableBody">
+        <!-- Route stations will be dynamically added here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Function to load checkpoint data from localStorage
+    function loadCheckPointData() {
+        const checkPointData = JSON.parse(localStorage.getItem('checkPointData')) || [];
+        const tableBody = document.getElementById('checkpointTableBody');
+        tableBody.innerHTML = '';
+
+        checkPointData.forEach((checkPoint, index) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="checkbox" data-index="${index}" class="checkpoint-checkbox"></td>
+                <td>${checkPoint.checkPointName}</td>
+                <td>${checkPoint.description}</td>
+                <td>${checkPoint.chipID}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Function to add a new route station
+    function addRouteStation() {
+        const routeStationName = prompt("Enter the name of the new Route Station:");
+        if (!routeStationName) {
+            return alert("Route Station name is required!");
+        }
+
+        const selectedCheckpoints = Array.from(document.querySelectorAll('.checkpoint-checkbox:checked'))
+            .map(checkbox => checkbox.parentElement.parentElement)
+            .map(row => ({
+                name: row.cells[1].innerText,
+                description: row.cells[2].innerText,
+                chipID: row.cells[3].innerText
+            }));
+
+        const routeStationData = JSON.parse(localStorage.getItem('routeStationData')) || [];
+        routeStationData.push({ routeStationName, checkpoints: selectedCheckpoints });
+        localStorage.setItem('routeStationData', JSON.stringify(routeStationData));
+        alert('Route station added successfully!');
+        loadRouteStations();
+    }
+
+    // Function to load route stations from localStorage
+    function loadRouteStations() {
+        const routeStationData = JSON.parse(localStorage.getItem('routeStationData')) || [];
+        const tableBody = document.getElementById('routeStationTableBody');
+        tableBody.innerHTML = '';
+
+        routeStationData.forEach((station, index) => {
+            const row = document.createElement('tr');
+            const checkpointsList = station.checkpoints.map(cp => cp.name).join(', ');
+
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${station.routeStationName}</td>
+                <td>${checkpointsList}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Save all route station data to localStorage
+    function saveData() {
+        const routeStationData = [];
+        const rows = document.querySelectorAll('#routeStationTableBody tr');
+        
+        rows.forEach((row, index) => {
+            const routeStationName = row.cells[1].innerText;
+            const checkpoints = row.cells[2].innerText.split(', ').map(cp => ({ name: cp }));
+            routeStationData.push({ routeStationName, checkpoints });
+        });
+
+        localStorage.setItem('routeStationData', JSON.stringify(routeStationData));
+        alert("Data saved successfully!");
+    }
+
+    // Modify selected route station
+    function modifyRouteStation() {
+        const selectedRow = document.querySelector('#routeStationTableBody tr.selected');
+        if (!selectedRow) return alert('Please select a route station to modify.');
+        const newRouteStationName = prompt('Enter new Route Station Name:', selectedRow.cells[1].innerText);
+        if (!newRouteStationName) return alert('Route Station Name is required.');
+
+        selectedRow.cells[1].innerText = newRouteStationName;
+    }
+
+    // Delete selected route station
+    function deleteRouteStation() {
+        const selectedRow = document.querySelector('#routeStationTableBody tr.selected');
+        if (selectedRow) {
+            selectedRow.remove();
+        } else {
+            alert('Please select a row to delete.');
+        }
+    }
+
+    // Event listeners
+    document.getElementById('add').addEventListener('click', addRouteStation);
+    document.getElementById('save').addEventListener('click', saveData);
+    document.getElementById('modify').addEventListener('click', modifyRouteStation);
+    document.getElementById('delete').addEventListener('click', deleteRouteStation);
+    document.getElementById('exit').addEventListener('click', () => {
+        window.location.href = 'gtmsSupervisor.html';
+    });
+
+    // Highlight selected row in route station table
+    document.getElementById('routeStationTableBody').addEventListener('click', (e) => {
+        const rows = document.querySelectorAll('#routeStationTableBody tr');
+        rows.forEach(row => row.classList.remove('selected'));
+        e.target.parentElement.classList.add('selected');
+    });
+
+    // Load checkpoints and route stations when the page is loaded
+    window.onload = function () {
+        loadCheckPointData();
+        loadRouteStations();
+    };
+</script>
+
+</body>
+</html>

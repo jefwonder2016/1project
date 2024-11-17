@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alarm Clock Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .toolbar button {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .toolbar button img {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+        }
+        .toolbar button:last-child {
+            margin-right: 0;
+        }
+        .toolbar button:hover {
+            background-color: #0056b3;
+        }
+        .row {
+            margin-bottom: 10px;
+        }
+        .time-table, .guard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .time-table th, .time-table td, .guard-table th, .guard-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .time-table th, .guard-table th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .actions {
+            cursor: pointer;
+            color: blue;
+        }
+        .actions:hover {
+            text-decoration: underline;
+        }
+        #guardTable {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button id="addBtn"><img src="add-icon.png" alt="Add">Add Alarm Clock</button>
+        <button id="saveBtn"><img src="save-icon.png" alt="Save">Save</button>
+        <button id="listBtn"><img src="listAllGuard-icon.png" alt="List All Guard">List All Guard</button>
+        <button id="sendBtn" style="display: none;"><img src="send-icon.png" alt="Send">Send</button>
+        <button id="exitBtn"><img src="exit-icon.png" alt="Exit">Exit</button>
+    </div>
+
+    <div class="row">
+        <label for="time">Time:</label>
+        <input type="time" id="time">
+    </div>
+
+    <div class="row">
+        <label>Days:</label>
+        <input type="checkbox" id="mon" value="Monday"> Mon
+        <input type="checkbox" id="tue" value="Tuesday"> Tue
+        <input type="checkbox" id="wed" value="Wednesday"> Wed
+        <input type="checkbox" id="thu" value="Thursday"> Thu
+        <input type="checkbox" id="fri" value="Friday"> Fri
+        <input type="checkbox" id="sat" value="Saturday"> Sat
+        <input type="checkbox" id="sun" value="Sunday"> Sun
+    </div>
+
+    <!-- Guard Table -->
+    <table class="guard-table" id="guardTable" style="display:none;">
+        <thead>
+            <tr>
+                <th>Checkbox</th>
+                <th>Name</th>
+                <th>Phone No.</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <!-- Alarm Clock Table -->
+    <table class="time-table" id="alarmTable">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Days</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        const alarmTable = document.getElementById('alarmTable').getElementsByTagName('tbody')[0];
+        const guardTable = document.getElementById('guardTable').getElementsByTagName('tbody')[0];
+
+        // Load the alarms from localStorage and populate the table
+        function loadAlarmClockData() {
+            const alarms = JSON.parse(localStorage.getItem('alarms') || '[]');
+            alarms.forEach(alarm => addRowToTable(alarm.time, alarm.days));
+            if (alarms.length > 0) {
+                document.getElementById('alarmTable').style.display = 'table';
+            }
+        }
+
+        // Add new alarm clock data
+        function addAlarmClock() {
+            const time = document.getElementById('time').value;
+            const days = getSelectedDays();
+            if (time && days.length > 0) {
+                addRowToTable(time, days);
+                saveAlarmClockData(time, days);
+                document.getElementById('alarmTable').style.display = 'table';
+            } else {
+                alert('Please select a time and at least one day.');
+            }
+        }
+
+        // Get selected days from checkboxes
+        function getSelectedDays() {
+            const days = [];
+            ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].forEach(dayId => {
+                const day = document.getElementById(dayId);
+                if (day.checked) {
+                    days.push(day.value);
+                }
+            });
+            return days;
+        }
+
+        // Add a new row to the alarm table
+        function addRowToTable(time, days) {
+            const newRow = alarmTable.insertRow();
+            newRow.insertCell(0).textContent = time;
+            newRow.insertCell(1).textContent = days.join(', ');
+            const actionsCell = newRow.insertCell(2);
+            actionsCell.innerHTML = '<span class="actions" onclick="deleteAlarm(this)">Delete</span>';
+        }
+
+        // Save alarm data to localStorage
+        function saveAlarmClockData(time, days) {
+            const alarms = JSON.parse(localStorage.getItem('alarms') || '[]');
+            alarms.push({ time, days });
+            localStorage.setItem('alarms', JSON.stringify(alarms));
+        }
+
+        // Delete an alarm from the table and localStorage
+        function deleteAlarm(element) {
+            const row = element.parentNode.parentNode;
+            const time = row.cells[0].textContent;
+            const days = row.cells[1].textContent.split(', ');
+            row.remove();
+            deleteAlarmFromStorage(time, days);
+        }
+
+        function deleteAlarmFromStorage(time, days) {
+            let alarms = JSON.parse(localStorage.getItem('alarms') || '[]');
+            alarms = alarms.filter(alarm => !(alarm.time === time && JSON.stringify(alarm.days) === JSON.stringify(days)));
+            localStorage.setItem('alarms', JSON.stringify(alarms));
+        }
+
+        // List All Guards
+        function listAllGuards() {
+            document.getElementById('guardTable').style.display = 'table';
+            document.getElementById('sendBtn').style.display = 'block';
+            guardTable.innerHTML = ''; // Clear table before populating
+
+            // Simulate fetching data from another HTML page (securityGuardSupervisor.html)
+            const guards = JSON.parse(localStorage.getItem('alarmClockData') || '[]'); // Replace with actual fetching mechanism if necessary
+            guards.forEach(guard => addGuardRowToTable(guard.name, guard.phoneNo));
+        }
+
+        // Add a new row to the guard table
+        function addGuardRowToTable(name, phoneNo) {
+            const newRow = guardTable.insertRow();
+            const checkboxCell = newRow.insertCell(0);
+            const nameCell = newRow.insertCell(1);
+            const phoneNoCell = newRow.insertCell(2);
+
+            checkboxCell.innerHTML = '<input type="checkbox">';
+            nameCell.textContent = name;
+            phoneNoCell.textContent = phoneNo;
+        }
+
+        // Send selected guards on duty
+        function sendGuardsOnDuty() {
+            const selectedGuards = [];
+            guardTable.querySelectorAll('input[type="checkbox"]').forEach((checkbox, index) => {
+                if (checkbox.checked) {
+                    const name = guardTable.rows[index].cells[1].textContent;
+                    selectedGuards.push(name);
+                }
+            });
+            if (selectedGuards.length > 0) {
+                alert('Successful Send to those Guard On Duty');
+            } else {
+                alert('No guards selected.');
+            }
+        }
+
+        // Event listeners for buttons
+        document.getElementById('addBtn').addEventListener('click', addAlarmClock);
+        document.getElementById('saveBtn').addEventListener('click', () => alert('Data saved successfully'));
+        document.getElementById('listBtn').addEventListener('click', listAllGuards);
+        document.getElementById('sendBtn').addEventListener('click', sendGuardsOnDuty);
+        document.getElementById('exitBtn').addEventListener('click', () => window.location.href = 'gtmsSupervisor.html');
+
+        // Load the data on page load
+        window.onload = loadAlarmClockData;
+    </script>
+
+</body>
+</html>

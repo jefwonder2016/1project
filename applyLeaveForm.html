@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apply Leave Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      width: 90%;
+    }
+
+    table, th, td {
+      border: 8px solid #ccc;
+    }
+
+    th, td {
+      padding: 20px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f9f9f9;
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 9px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="button"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 50px;
+      cursor: pointer;
+    }
+
+    input[type="button"]:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <TABLE BORDER="0">
+  <TR BGCOLOR="Tan">
+  <TD COLSPAN="3"> <h1 align="center"> Apply Leave Form</h1> </TD>
+
+  <form id="enquiryForm">
+    <table>
+      <tr>
+        <th>Full Name:</th>
+        <td><input type="text" id="fullName" required placeholder="Enter Your Name"></td>
+      </tr>
+      <tr>
+        <th>Email:</th>
+        <td><input type="text" id="email" required placeholder="Enter Correct Email Format"></td>
+      </tr>
+
+      <tr>
+        <th>Category of Leave:</th>
+        <td>
+          <input type="checkbox" name="enquiryCategory" value="Annual Leave"> Annual Leave <br>
+          <input type="checkbox" name="enquiryCategory" value="Sick Leave"> Sick Leave <br>
+          <input type="checkbox" name="enquiryCategory" value="Maternity/Paternity Leave"> Maternity/Paternity Leave<br>
+          <input type="checkbox" name="enquiryCategory" value="Emergency Leave"> Emergency Leave <br>
+          <input type="checkbox" name="enquiryCategory" value="Study Leave"> Study Leave <br>
+          <input type="checkbox" name="enquiryCategory" value="Unpaid Leave"> Unpaid Leave <br>
+          <input type="checkbox" name="enquiryCategory" value="Bereavement Leave"> Bereavement Leave <br>
+        </td>
+      </tr>
+      <tr>
+        <th>Detailed Reason (Max 250 words):</th>
+        <td><textarea id="detailedEnquiry" required placeholder="Type here..."></textarea></td>
+      </tr>
+    </table>
+    <div>
+      <p>Word count: <span id="wordCount">0</span>/250</p>
+    </div>
+    <input type="button" value="Submit" onclick="submitForm()">
+    <input type="button" value="Cancel" onclick="clearForm()">
+    <a href="gtms.html"><button type="button">Home</button></a>
+  </form>
+
+  <div id="output" style="display: none;">
+    <h2>Congratulations...!!</h2>
+    <table>
+      <tr>
+        <td>Name:</td>
+        <td id="outputName"></td>
+      </tr>
+      <tr>
+        <td>Email:</td>
+        <td id="outputEmail"></td>
+      </tr>
+      <tr>
+        <td>Selected Program:</td>
+        <td id="outputCourse"></td>
+      </tr>
+      <tr>
+        <td>Detailed Enquiry:</td>
+        <td id="outputDetailedEnquiry"></td>
+      </tr>
+    </table>
+  </div>
+
+  <script>
+    const maxWords = 250; // Maximum word limit
+
+    document.getElementById("detailedEnquiry").addEventListener("input", function () {
+      const detailedEnquiry = this.value;
+      const wordCount = detailedEnquiry.split(/\s+/).filter(word => word !== '').length;
+      document.getElementById("wordCount").innerText = wordCount;
+
+      if (wordCount > maxWords) {
+        // Split the text and limit it to the maximum words
+        const words = detailedEnquiry.split(/\s+/);
+        words.splice(maxWords);
+        this.value = words.join(' ');
+        document.getElementById("wordCount").innerText = maxWords;
+      }
+    });
+
+    function submitForm() {
+      const fullName = document.getElementById("fullName").value;
+      const email = document.getElementById("email").value;
+      const course = document.getElementById("course").value;
+      const detailedEnquiry = document.getElementById("detailedEnquiry").value;
+      const enquiryCategories = [...document.querySelectorAll("input[name='enquiryCategory']:checked")].map(input => input.value);
+
+      if (!fullName || !email || !course || enquiryCategories.length === 0 || !detailedEnquiry) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+
+      document.getElementById("outputName").innerText = fullName;
+      document.getElementById("outputEmail").innerText = email;
+      document.getElementById("outputCourse").innerText = course;
+      document.getElementById("outputDetailedEnquiry").innerText = detailedEnquiry;
+
+      document.getElementById("enquiryForm").reset();
+      document.getElementById("output").style.display = "block";
+    }
+
+    function clearForm() {
+      document.getElementById("enquiryForm").reset();
+      document.getElementById("output").style.display = "none";
+    }
+  </script>
+</body>
+</html>

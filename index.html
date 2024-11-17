@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard Tour Management System</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            border: 1px solid #ccc;
+            padding: 20px;
+        }
+
+        .left, .right {
+            width: 50%;
+            text-align: center;
+        }
+
+        .middle {
+            width: 40%;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: blue; 
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 5px;
+        }
+
+        .login-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .login-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Left Side: Image -->
+        <div class="left">
+            <img src="MainPage3.bmp" alt="Left Image" style="max-width: 100%;">
+        </div>
+
+        <!-- Middle Section: Form -->
+        <div class="middle">
+            <div class="title">Guard Tour Management System</div>
+            <div class="form-group">
+                <label for="user-select">User:</label>
+                <select id="user-select">
+                    <option value="Developer">Developer</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Supervisor">Supervisor</option>
+                    <option value="Operator">Operator</option>
+                    <option value="Security Guard">Security Guard</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+            <button class="login-btn" onclick="login()">Login</button>
+        </div>
+
+        <!-- Right Side: Image -->
+        <div class="right">
+            <img src="MainPage4.bmp" alt="Right Image" style="max-width: 100%;">
+        </div>
+    </div>
+
+    <!-- Background music for Cello Concertos -->
+    <audio id="background-music" loop>
+        <source src="Cello Concertos.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Load user data from localStorage
+        function loadChangePssData() {
+            // Default passwords if not set in localStorage
+            const defaultPasswords = {
+                Developer: 'Developer6789',
+                Admin: 'Admin3456',
+                Supervisor: 'Supervisor9999',
+                Operator: 'Operator5555',
+                'Security Guard': 'Security1111'
+            };
+
+            // Store the default passwords if not already in localStorage
+            if (!localStorage.getItem('userPasswords')) {
+                localStorage.setItem('userPasswords', JSON.stringify(defaultPasswords));
+            }
+        }
+
+        // Login function
+        function login() {
+            const user = document.getElementById('user-select').value;
+            const password = document.getElementById('password').value;
+
+            // Retrieve passwords from localStorage
+            const userPasswords = JSON.parse(localStorage.getItem('userPasswords'));
+
+            // Validate password
+            if (userPasswords[user] === password) {
+                // Play background music
+                const music = document.getElementById('background-music');
+                music.play();
+
+                // Redirect to the appropriate page
+                switch (user) {
+                    case 'Developer':
+                        window.location.href = 'gtms.html';
+                        break;
+                    case 'Admin':
+                        window.location.href = 'gtmsAdmin.html';
+                        break;
+                    case 'Supervisor':
+                        window.location.href = 'gtmsSupervisor.html';
+                        break;
+                    case 'Operator':
+                        window.location.href = 'gtmsOperator.html';
+                        break;
+                    case 'Security Guard':
+                        window.location.href = 'gtmsGuard.html';
+                        break;
+                }
+            } else {
+                alert('Invalid password. Please try again.');
+            }
+        }
+
+        // Call the function to load data on page load
+        loadChangePssData();
+
+        // Play music when page loads
+        window.onload = function() {
+            const music = document.getElementById('background-music');
+            // Play music after user interaction
+            document.body.addEventListener('click', function() {
+                music.play();
+            });
+        }
+    </script>
+
+</body>
+</html>

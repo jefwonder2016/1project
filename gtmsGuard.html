@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard Tour Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+            margin: 10px;
+        }
+        .button {
+            font-size: 20px;
+            padding: 10px 30px;
+            margin: 0 15px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #2980b9;
+            color: #f0f0f0;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            font-size: 25px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 250px;
+            z-index: 1;
+        }
+        .dropdown-content a {
+            display: block;
+            padding: 15px 30px;
+            text-decoration: none;
+            color: #333;
+        }
+        .dropdown-content a:hover {
+            background-color: #ddd;
+            cursor: pointer;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 2px solid #333;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        img {
+            width: 100%;
+            max-height: auto;
+        }
+    </style>
+    <script>
+        function closeSystem() {
+            if (confirm("Are you sure to logout the system?")) {
+                window.location.href = "sessionEnded.html";
+            }
+        }
+
+        function exit() {
+            window.location.href = "gtmsGuard.html";
+        }
+    </script>
+</head>
+<body>
+    <h1><font color="blue">Guard Tour Management System</font></h1>
+    <div class="container">
+        <table>
+            <tr>
+               
+                <td>
+                    <div class="dropdown">
+                        <a class="button" href="about">About</a>
+                        <div class="dropdown-content">
+                            <a href="video1Guard.html">Guard Tour Management System A</a>
+                            <a href="video2Guard.html">Guard Tour Management System B</a>
+                            <a href="linkYoutubeGuard.html">Guard Tour Management System C</a>
+                            <a href="contactGuard.html">Contact</a>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <a class="button" href="push2Talk.html">Push2Talk</a>
+                        <div class="dropdown-content">
+                            <a href="amongSecurityTeamGuard.html">Among Security Team</a>
+                        </div>
+                    </div>
+                </td>
+                <td><a class="button" onclick="closeSystem()">Logout</a></td>
+            </tr>
+        </table>
+
+        <div class="row">
+            <img src="gtmsGuard.bmp" alt="Guard Tour Management System">
+        </div>
+
+        <div class="row">
+            <h1 align="center"><font color="blue">September On Duty Time Table</font></h1>
+        </div>
+
+       <div class="row">
+            <table align="center">
+                <tr>
+                    <th>No</th>
+                    <th>In-Charge-Person</th>
+                    <th>District</th>
+                    <th>Date</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Ahmad Ali</td>
+                    <td>Plan A</td>
+                    <td>1 week</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>John Mark</td>
+                    <td>Plan A</td>
+                    <td>2 week</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Albert Wong</td>
+                    <td>Plan A</td>
+                    <td>3 week</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Riduan Hadi</td>
+                    <td>Plan A</td>
+                    <td>4 week</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Peter Joseph</td>
+                    <td>Plan B</td>
+                    <td>Whole Month</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Alex James</td>
+                    <td>Plan C</td>
+                    <td>Whole Month</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Zulkifli Mohamad</td>
+                    <td>Plan D</td>
+                    <td>Whole Month</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Ismail Abdullah</td>
+                    <td>Plan E</td>
+                    <td>Whole Month</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="row">
+            <h1 align="center"><a class="button" href="applyLeaveFormGuard.html">Apply Leave Form</a></h1>
+        </div>
+
+        <div class="row">
+            <p>&copy; 2024 Digital Guard Tour Management System</p>
+        </div>
+    </div>
+</body>
+</html>

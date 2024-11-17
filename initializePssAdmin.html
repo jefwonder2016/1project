@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize Passwords</title>
+    <style>
+        /* Basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* Style the toolbar buttons */
+        .toolbar {
+            margin-top: 20px;
+        }
+
+        .toolbar button {
+            margin: 0 10px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .toolbar img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Display the initializePss.bmp image -->
+    <img src="initializePss.bmp" alt="Initialize Passwords">
+
+    <!-- Toolbar buttons -->
+    <div class="toolbar">
+        <button id="initializeBtn">
+            <img src="initialize-icon.png" alt="Initialize Icon"> Initialize Password
+        </button>
+        <button id="saveBtn">
+            <img src="save-icon.png" alt="Save Icon"> Save
+        </button>
+        <button id="exitBtn">
+            <img src="exit-icon.png" alt="Exit Icon"> Exit
+        </button>
+    </div>
+
+    <script>
+        // Default passwords
+        const defaultPasswords = {
+            Admin: 'Admin3456',
+            Supervisor: 'Supervisor9999',
+            Operator: 'Operator5555',
+            SecurityGuard: 'Security1111'
+        };
+
+        // Load passwords from localStorage or use defaults if not present
+        function loadPasswords() {
+            const storedPasswords = localStorage.getItem('userPasswords');
+            return storedPasswords ? JSON.parse(storedPasswords) : defaultPasswords;
+        }
+
+        // Save passwords to localStorage
+        function savePasswords(passwords) {
+            localStorage.setItem('userPasswords', JSON.stringify(passwords));
+        }
+
+        // Reset passwords to defaults
+        function resetPasswords() {
+            const currentPasswords = loadPasswords();
+
+            // Reset only specific users' passwords to their defaults
+            currentPasswords.Admin = defaultPasswords.Admin;
+            currentPasswords.Supervisor = defaultPasswords.Supervisor;
+            currentPasswords.Operator = defaultPasswords.Operator;
+            currentPasswords.SecurityGuard = defaultPasswords.SecurityGuard;
+
+            savePasswords(currentPasswords);
+            alert('All Password Back to Default Password');
+        }
+
+        // Initialize page actions
+        document.getElementById('initializeBtn').addEventListener('click', resetPasswords);
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const passwords = loadPasswords();
+            savePasswords(passwords);
+            alert('Passwords saved successfully.');
+        });
+        document.getElementById('exitBtn').addEventListener('click', () => {
+            window.location.href = 'gtmsAdmin.html';
+        });
+
+        // Load existing passwords on page load
+        window.onload = function () {
+            loadPasswords();
+        };
+    </script>
+</body>
+</html>

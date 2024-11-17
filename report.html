@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard Tour Management System - Monthly Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .toolbar, .filter-section {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .filter-section label {
+            display: inline-block;
+            width: 150px;
+            margin-right: 10px;
+        }
+        .filter-section input, .filter-section select {
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        #reportSection {
+            display: none;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        .action-buttons {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Individual Monthly Report</h1>
+
+    <!-- Toolbar (optional) -->
+    <div class="toolbar">
+        <button onclick="filterReport()">Generate Monthly Report</button>
+        <button onclick="saveReport()">Save Report</button>
+        <button onclick="printReport()">Print Report</button>
+        <button onclick="exitPage()">Exit</button>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <h3>Filter Report</h3>
+        <label for="guardSelect">Name:</label>
+        <select id="guardSelect">
+            <option value="">-- Select Guard --</option>
+        </select><br>
+
+        <label for="routeSelect">Route:</label>
+        <select id="routeSelect">
+            <option value="">-- Select Route --</option>
+        </select><br>
+
+        <label for="fromDate">From Date:</label>
+        <input type="date" id="fromDate"><br>
+
+        <label for="toDate">To Date:</label>
+        <input type="date" id="toDate">
+    </div>
+
+    <!-- Report Section -->
+    <div id="reportSection">
+        <h2>Monthly Report for: <span id="selectedGuard"></span></h2>
+        <h3>Route: <span id="selectedRoute"></span></h3>
+        <table id="patrolTable">
+            <thead>
+                <tr>
+                    <th>CheckPoint Name</th>
+                    <th>Date Patrol</th>
+                    <th>Time Patrol</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Patrol data will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Function to load security guards from localStorage
+        function loadSecurityGuardData() {
+            const securityGuards = JSON.parse(localStorage.getItem('securityGuardData')) || [];
+            const guardSelect = document.getElementById('guardSelect');
+            securityGuards.forEach(guard => {
+                const option = document.createElement('option');
+                option.value = guard.name;
+                option.textContent = guard.name;
+                guardSelect.appendChild(option);
+            });
+        }
+
+        // Function to load route stations from localStorage
+        function loadRouteStations() {
+            const routeSelect = document.getElementById('routeSelect');
+            const storedRoutes = JSON.parse(localStorage.getItem('routeStationData')) || [];
+
+            if (storedRoutes.length === 0) {
+                const option = document.createElement('option');
+                option.value = "";
+                option.textContent = "No Routes Available";
+                routeSelect.appendChild(option);
+                routeSelect.disabled = true;
+                return;
+            }
+
+            storedRoutes.forEach(route => {
+                const option = document.createElement('option');
+                option.value = route.routeStationName;
+                option.textContent = route.routeStationName;
+                routeSelect.appendChild(option);
+            });
+        }
+
+
+        // Generate patrol data for each day in the date range
+        function generatePatrolData(fromDate, toDate) {
+            const patrolData = [];
+            const startDate = new Date(fromDate);
+            const endDate = new Date(toDate);
+
+            const checkPointData = JSON.parse(localStorage.getItem('checkPointData')) || [];
+
+            for (let d = startDate; d <= endDate; d.setDate(d.getDate() + 1)) {
+                checkPointData.forEach(checkpoint => {
+                    patrolData.push({
+                        checkPointName:checkpoint.checkPointName,
+                        datePatrol: d.toISOString().split('T')[0]
+                    });
+                });
+            }
+
+            return patrolData;
+        }
+
+        // Function to display the report
+        function filterReport() {
+            const guardName = document.getElementById('guardSelect').value;
+            const routeName = document.getElementById('routeSelect').value;
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+
+            if (!guardName || !routeName || !fromDate || !toDate) {
+                alert("Please select all fields to generate the report.");
+                return;
+            }
+
+            const patrolData = generatePatrolData(fromDate, toDate);
+
+            document.getElementById('selectedGuard').textContent = guardName;
+            document.getElementById('selectedRoute').textContent = routeName;
+            const tbody = document.getElementById('patrolTable').querySelector('tbody');
+            tbody.innerHTML = '';
+
+            patrolData.forEach(record => {
+                const row = `<tr>
+                    <td>${record.checkPointName}</td>
+                    <td>${record.datePatrol}</td>
+                    <td><input type="time" /></td>
+                    <td><input type="text" placeholder="Status" /></td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+
+            document.getElementById('reportSection').style.display = 'block';
+        }
+
+        // Save the report
+        function saveReport() {
+            const patrolRecords = [];
+            document.querySelectorAll('#patrolTable tbody tr').forEach(row => {
+                patrolRecords.push({
+                    checkPointName: row.cells[0].textContent,
+                    datePatrol: row.cells[1].textContent,
+                    timePatrol: row.cells[2].querySelector('input').value,
+                    status: row.cells[3].querySelector('input').value
+                });
+            });
+
+            const reportData = {
+                guardName: document.getElementById('selectedGuard').textContent,
+                routeName: document.getElementById('selectedRoute').textContent,
+                patrolRecords: patrolRecords
+            };
+
+            localStorage.setItem('individualMonthlyReport', JSON.stringify(reportData));
+            alert("Report saved to localStorage.");
+        }
+
+        // Print the report
+        function printReport() {
+            window.print();
+        }
+
+        // Exit the page
+        function exitPage() {
+            window.location.href = 'gtms.html';
+        }
+
+        // Load data from localStorage when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSecurityGuardData();
+            loadRouteStations();
+        });
+
+    </script>
+
+</body>
+</html>

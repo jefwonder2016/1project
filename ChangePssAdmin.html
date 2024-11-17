@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Password</title>
+    <style>
+        /* Basic styling for layout and appearance */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        button {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .save-btn {
+            background-color: #28a745;
+        }
+
+        .exit-btn {
+            background-color: #dc3545;
+        }
+
+        button i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="title">Change Password</div>
+        <div class="form-group">
+            <label for="user-select">User:</label>
+            <select id="user-select">
+                <option value="Admin">Admin</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="Operator">Operator</option>
+                <option value="Security Guard">Security Guard</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="new-password">New Password:</label>
+            <input type="password" id="new-password" placeholder="Enter new password">
+        </div>
+        <div class="form-group">
+            <label for="reenter-password">Re-enter Password:</label>
+            <input type="password" id="reenter-password" placeholder="Re-enter new password">
+        </div>
+        <div class="button-group">
+            <button class="save-btn" onclick="savePassword()"><i>💾</i>Save</button>
+            <button class="exit-btn" onclick="exitPage()"><i>⏹️</i>Exit</button>
+        </div>
+    </div>
+
+    <script>
+        // Load default passwords into localStorage if not already set
+        function loadChangePssData() {
+            const defaultPasswords = {
+                Admin: 'Admin3456',
+                Supervisor: 'Supervisor9999',
+                Operator: 'Operator5555',
+                'Security Guard': 'Security1111'
+            };
+
+            if (!localStorage.getItem('userPasswords')) {
+                localStorage.setItem('userPasswords', JSON.stringify(defaultPasswords));
+            }
+        }
+
+        // Save the new password to localStorage
+        function savePassword() {
+            const user = document.getElementById('user-select').value;
+            const newPassword = document.getElementById('new-password').value;
+            const reenterPassword = document.getElementById('reenter-password').value;
+
+            // Check if the new passwords match
+            if (newPassword !== reenterPassword) {
+                alert('Passwords do not match. Please try again.');
+                return;
+            }
+
+            // Retrieve passwords from localStorage
+            const userPasswords = JSON.parse(localStorage.getItem('userPasswords'));
+
+            // Update password for the selected user
+            userPasswords[user] = newPassword;
+
+            // Save the updated passwords back to localStorage
+            localStorage.setItem('userPasswords', JSON.stringify(userPasswords));
+
+            alert('Password changed successfully!');
+
+            // Clear the input fields
+            document.getElementById('new-password').value = '';
+            document.getElementById('reenter-password').value = '';
+        }
+
+        // Redirect to MainPage.html
+        function exitPage() {
+            window.location.href = 'gtmsAdmin.html';
+        }
+
+        // Load user passwords on page load
+        window.onload = loadChangePssData;
+    </script>
+
+</body>
+</html>

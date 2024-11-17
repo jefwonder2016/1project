@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Chip ID</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .toolbar button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .toolbar button img {
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="toolbar">
+        <button id="addBtn">
+            <img src="add-icon.png" alt="Add Icon" width="16" height="16">
+            Add
+        </button>
+        <button id="modifyBtn" disabled>
+            <img src="modify-icon.png" alt="Modify Icon" width="16" height="16">
+            Modify
+        </button>
+        <button id="deleteBtn" disabled>
+            <img src="delete-icon.png" alt="Delete Icon" width="16" height="16">
+            Delete
+        </button>
+        <button id="saveBtn">
+            <img src="save-icon.png" alt="Save Icon" width="16" height="16">
+            Save
+        </button>
+        <button id="exitBtn">
+            <img src="exit-icon.png" alt="Exit Icon" width="16" height="16">
+            Exit
+        </button>
+    </div>
+
+    <!-- Register Chip ID Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Chip ID</th>
+            </tr>
+        </thead>
+        <tbody id="chipIDTable">
+            <!-- Dynamic rows will be added here -->
+        </tbody>
+    </table>
+
+    <script>
+        const addBtn = document.getElementById('addBtn');
+        const modifyBtn = document.getElementById('modifyBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const exitBtn = document.getElementById('exitBtn');
+        const chipIDTable = document.getElementById('chipIDTable');
+        let selectedRow = null;
+
+        // Load data from localStorage when the page loads
+        document.addEventListener('DOMContentLoaded', loadChipIDData);
+
+        // Add button functionality
+        addBtn.addEventListener('click', () => {
+            const chipID = prompt('Enter Chip ID:');
+            if (chipID) {
+                addRow(chipID);
+                saveChipIDData(); // Save data after adding a new row
+            }
+        });
+
+        // Modify button functionality
+        modifyBtn.addEventListener('click', () => {
+            if (selectedRow) {
+                const chipID = prompt('Enter new Chip ID:', selectedRow.cells[1].textContent);
+                if (chipID) {
+                    selectedRow.cells[1].textContent = chipID;
+                    saveChipIDData(); // Save data after modifying the row
+                }
+            }
+        });
+
+        // Delete button functionality
+        deleteBtn.addEventListener('click', () => {
+            if (selectedRow) {
+                chipIDTable.deleteRow(selectedRow.rowIndex - 1);
+                updateRowNumbers(); // Update row numbers after deletion
+                selectedRow = null;
+                modifyBtn.disabled = true;
+                deleteBtn.disabled = true;
+                saveChipIDData(); // Save data after deleting a row
+            }
+        });
+
+        // Save button functionality
+        saveBtn.addEventListener('click', () => {
+            saveChipIDData(); // Simulate saving data to localStorage
+            alert('Data saved successfully!');
+        });
+
+        // Exit button functionality
+        exitBtn.addEventListener('click', () => {
+            window.location.href = 'gtms.html';
+        });
+
+        // Select a row when clicked
+        function selectRow(row) {
+            if (selectedRow) {
+                selectedRow.style.backgroundColor = '';
+            }
+            selectedRow = row;
+            row.style.backgroundColor = '#d3d3d3';
+            modifyBtn.disabled = false;
+            deleteBtn.disabled = false;
+        }
+
+        // Add a new row to the table
+        function addRow(chipID) {
+            const newRow = chipIDTable.insertRow();
+            const rowCount = chipIDTable.rows.length;
+
+            // Insert the running number (No)
+            newRow.insertCell(0).textContent = rowCount;
+
+            // Insert the Chip ID
+            newRow.insertCell(1).textContent = chipID;
+
+            // Set up row selection
+            newRow.addEventListener('click', () => selectRow(newRow));
+        }
+
+        // Save chip ID data to localStorage
+        function saveChipIDData() {
+            const chipIDData = [];
+            const rows = chipIDTable.querySelectorAll('tr');
+            rows.forEach((row) => {
+                const chipID = row.cells[1].textContent;
+                chipIDData.push({ chipID });
+            });
+            localStorage.setItem('chipIDData', JSON.stringify(chipIDData));
+        }
+
+        // Load chip ID data from localStorage
+        function loadChipIDData() {
+            const chipIDData = JSON.parse(localStorage.getItem('chipIDData')) || [];
+            chipIDData.forEach((data) => {
+                addRow(data.chipID);
+            });
+        }
+
+        // Update the running number (No) after deletion or modification
+        function updateRowNumbers() {
+            const rows = chipIDTable.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+    </script>
+
+</body>
+
+</html>

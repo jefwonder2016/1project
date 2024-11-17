@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Page - Guard Tour Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100vh;
+        }
+        .toolbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .toolbar button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .toolbar button img {
+            margin-right: 5px;
+        }
+        .container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .feedback-form {
+            display: flex;
+            flex-direction: column;
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .feedback-form label {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .feedback-form input[type="text"],
+        .feedback-form input[type="email"],
+        .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .feedback-form input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .word-count {
+            text-align: right;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #888;
+        }
+        .bottom-toolbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .bottom-toolbar button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .bottom-toolbar button img {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button onclick="exitPage()">
+            <img src="exit-icon.png" alt="Exit Icon" width="20" height="20">
+            Exit
+        </button>
+    </div>
+
+    <div class="container">
+        <h1>Guard Tour Management System Feedback Form</h1>
+        <p>Please fill out this brief feedback form so we can ensure to serve the best quality experience to all of our users.</p>
+        <form class="feedback-form">
+            <label for="name">a) Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">b) Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label>c) Were you able to find what you needed?</label>
+            <input type="checkbox" id="yes" name="find" value="Yes"> Yes
+            <input type="checkbox" id="no" name="find" value="No"> No
+
+            <label for="feature">If you did not find what you needed, please tell us what features or system you were seeking:</label>
+            <textarea id="feature" rows="4" maxlength="250" placeholder="Enter your feedback..."></textarea>
+            <div class="word-count" id="featureWordCount">Word Count: 0/250</div>
+
+            <label>d) How easy is it to use this Guard Tour Management System?</label>
+            <input type="checkbox" name="ease" value="Very Easy"> Very Easy
+            <input type="checkbox" name="ease" value="Easy"> Easy
+            <input type="checkbox" name="ease" value="Average"> Average
+            <input type="checkbox" name="ease" value="Difficult"> Difficult
+            <input type="checkbox" name="ease" value="Very Difficult"> Very Difficult
+
+            <label>e) What is the likelihood that you will keep using this system?</label>
+            <input type="checkbox" name="likelihood" value="Extremely Likely"> Extremely Likely
+            <input type="checkbox" name="likelihood" value="Very Likely"> Very Likely
+            <input type="checkbox" name="likelihood" value="Moderately Likely"> Moderately Likely
+            <input type="checkbox" name="likelihood" value="Slightly Likely"> Slightly Likely
+            <input type="checkbox" name="likelihood" value="Unlikely to Use"> Unlikely to Use
+
+            <label for="comments">f) Please provide any additional comments or suggestions:</label>
+            <textarea id="comments" rows="4" maxlength="250" placeholder="Enter your comments..."></textarea>
+            <div class="word-count" id="commentsWordCount">Word Count: 0/250</div>
+
+            <button type="button" onclick="sendFeedback()">
+                <img src="send-icon.png" alt="Send Icon" width="20" height="20">
+                Send
+            </button>
+        </form>
+    </div>
+
+    <div class="bottom-toolbar">
+        <button onclick="sendFeedback()">
+            <img src="send-icon.png" alt="Send Icon" width="20" height="20">
+            Send
+        </button>
+    </div>
+
+    <script>
+        const featureText = document.getElementById('feature');
+        const commentsText = document.getElementById('comments');
+        const featureWordCount = document.getElementById('featureWordCount');
+        const commentsWordCount = document.getElementById('commentsWordCount');
+
+        featureText.addEventListener('input', function() {
+            featureWordCount.textContent = `Word Count: ${featureText.value.length}/250`;
+        });
+
+        commentsText.addEventListener('input', function() {
+            commentsWordCount.textContent = `Word Count: ${commentsText.value.length}/250`;
+        });
+
+        function sendFeedback() {
+            alert('Successfully sent the feedback form to the administrator.');
+            document.querySelector('.feedback-form').reset();
+            featureWordCount.textContent = 'Word Count: 0/250';
+            commentsWordCount.textContent = 'Word Count: 0/250';
+        }
+
+        function exitPage() {
+            window.location.href = 'gtms.html';
+        }
+    </script>
+
+</body>
+</html>

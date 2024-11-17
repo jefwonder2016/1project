@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Among Security Team</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .toolbar button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .toolbar button img {
+            margin-right: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .hidden {
+            display: none;
+        }
+        .word-count {
+            margin-top: 10px;
+        }
+        #voiceCallBox {
+
+            text-align: center; /* Centering the buttons */
+            margin-top: 20px;
+        }
+        #videoCallBox {
+
+            text-align: right; /* Aligning the button to the right */
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button id="connectBtn">
+            <img src="connect-icon.png" alt="Connect Icon" width="16" height="16">
+            Connect Security Guard
+        </button>
+        <button id="exitBtn">
+            <img src="exit-icon.png" alt="Exit Icon" width="16" height="16">
+            Exit
+        </button>
+    </div>
+
+    <table id="securityGuardTable">
+        <thead>
+            <tr>
+                <th>Checkbox</th>
+                <th>Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamic rows will be added here -->
+        </tbody>
+    </table>
+
+    <div id="additionalOptions" class="hidden">
+        <div class="toolbar">
+            <button id="messageBtn">Message</button>
+            <button id="voiceCallBtn">Voice Call</button>
+            <button id="videoCallBtn">Video Call</button>
+        </div>
+
+        <!-- Message Box -->
+        <div id="messageBox" class="hidden">
+            <textarea id="messageText" rows="4" cols="50" maxlength="250"></textarea>
+            <div class="word-count">Word Count: <span id="wordCount">0</span>/250</div>
+            <button id="sendMessageBtn">Send Message</button>
+        </div>
+
+        <!-- Voice Call Box -->
+        <div id="voiceCallBox" class="hidden">
+            <button id="recordVoiceBtn">Hold to Record Voice</button>
+            <button id="sendVoiceCallBtn">Send Voice Call</button>
+        </div>
+
+        <!-- Video Call Box -->
+        <div id="videoCallBox" class="hidden">
+            <button id="startVideoCallBtn">Start Video Call</button>
+            <button id="endVideoCallBtn">End Video Call</button>
+        </div>
+    </div>
+
+    <script>
+        // References to the DOM elements
+        const connectBtn = document.getElementById('connectBtn');
+        const exitBtn = document.getElementById('exitBtn');
+        const securityGuardTable = document.getElementById('securityGuardTable').querySelector('tbody');
+        const additionalOptions = document.getElementById('additionalOptions');
+        const messageBtn = document.getElementById('messageBtn');
+        const voiceCallBtn = document.getElementById('voiceCallBtn');
+        const videoCallBtn = document.getElementById('videoCallBtn');
+        const messageBox = document.getElementById('messageBox');
+        const voiceCallBox = document.getElementById('voiceCallBox');
+        const videoCallBox = document.getElementById('videoCallBox');
+        const messageText = document.getElementById('messageText');
+        const wordCount = document.getElementById('wordCount');
+        const sendMessageBtn = document.getElementById('sendMessageBtn');
+        const recordVoiceBtn = document.getElementById('recordVoiceBtn');
+        const sendVoiceCallBtn = document.getElementById('sendVoiceCallBtn');
+        const startVideoCallBtn = document.getElementById('startVideoCallBtn');
+        const endVideoCallBtn = document.getElementById('endVideoCallBtn');
+
+        // Load data from localStorage when the page loads
+        document.addEventListener('DOMContentLoaded', loadSecurityGuardData);
+
+        function loadSecurityGuardData() {
+            const guardData = JSON.parse(localStorage.getItem('securityGuardData')) || [];
+            guardData.forEach(data => {
+                const row = securityGuardTable.insertRow();
+                const checkboxCell = row.insertCell(0);
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkboxCell.appendChild(checkbox);
+
+                row.insertCell(1).textContent = data.name;
+                row.insertCell(2).textContent = data.description;
+            });
+        }
+
+        connectBtn.addEventListener('click', () => {
+            const selectedGuards = Array.from(securityGuardTable.querySelectorAll('input[type="checkbox"]:checked'));
+            if (selectedGuards.length > 0) {
+                additionalOptions.classList.remove('hidden');
+            } else {
+                alert('Please select at least one security guard.');
+            }
+        });
+
+        exitBtn.addEventListener('click', () => {
+            window.location.href = 'gtmsOperator.html';  // Simulated exit
+        });
+
+        messageBtn.addEventListener('click', () => {
+            resetOptions();
+            messageBox.classList.remove('hidden');
+        });
+
+        messageText.addEventListener('input', () => {
+            wordCount.textContent = messageText.value.length;
+        });
+
+        sendMessageBtn.addEventListener('click', () => {
+            alert('Message sent successfully to selected security guards.');
+        });
+
+        voiceCallBtn.addEventListener('click', () => {
+            resetOptions();
+            voiceCallBox.classList.remove('hidden');
+        });
+
+        recordVoiceBtn.addEventListener('mousedown', () => {
+            alert('Recording started...');
+        });
+
+        recordVoiceBtn.addEventListener('mouseup', () => {
+            alert('Recording stopped.');
+        });
+
+        sendVoiceCallBtn.addEventListener('click', () => {
+            alert('Voice call sent successfully to selected security guards.');
+        });
+
+        videoCallBtn.addEventListener('click', () => {
+            resetOptions();
+            videoCallBox.classList.remove('hidden');
+        });
+
+        startVideoCallBtn.addEventListener('click', () => {
+            alert('Starting video call with selected security guards.');
+        });
+
+        endVideoCallBtn.addEventListener('click', () => {
+            alert('Ending video call with selected security guards.');
+        });
+
+        function resetOptions() {
+            messageBox.classList.add('hidden');
+            voiceCallBox.classList.add('hidden');
+            videoCallBox.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

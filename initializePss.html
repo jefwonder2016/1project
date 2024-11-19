@@ -53,6 +53,7 @@
     <script>
         // Default passwords
         const defaultPasswords = {
+            Server: 'Server6789',
             Admin: 'Admin3456',
             Supervisor: 'Supervisor9999',
             Operator: 'Operator5555',
@@ -75,6 +76,7 @@
             const currentPasswords = loadPasswords();
 
             // Reset only specific users' passwords to their defaults
+            currentPasswords.Server = defaultPasswords.Server;
             currentPasswords.Admin = defaultPasswords.Admin;
             currentPasswords.Supervisor = defaultPasswords.Supervisor;
             currentPasswords.Operator = defaultPasswords.Operator;

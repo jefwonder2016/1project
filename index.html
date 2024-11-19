@@ -81,7 +81,7 @@
             <div class="form-group">
                 <label for="user-select">User:</label>
                 <select id="user-select">
-                    <option value="Developer">Developer</option>
+                    <option value="Server">Server</option>
                     <option value="Admin">Admin</option>
                     <option value="Supervisor">Supervisor</option>
                     <option value="Operator">Operator</option>
@@ -108,72 +108,80 @@
     </audio>
 
     <script>
-        // Load user data from localStorage
-        function loadChangePssData() {
-            // Default passwords if not set in localStorage
-            const defaultPasswords = {
-                Developer: 'Developer6789',
-                Admin: 'Admin3456',
-                Supervisor: 'Supervisor9999',
-                Operator: 'Operator5555',
-                'Security Guard': 'Security1111'
-            };
+    // Load user data from localStorage
+    function loadChangePssData() {
+        // Default passwords if not set in localStorage
+        const defaultPasswords = {
+            Server: 'Server6789',
+            Admin: 'Admin3456',
+            Supervisor: 'Supervisor9999',
+            Operator: 'Operator5555',
+            'Security Guard': 'Security1111'
+        };
 
-            // Store the default passwords if not already in localStorage
-            if (!localStorage.getItem('userPasswords')) {
-                localStorage.setItem('userPasswords', JSON.stringify(defaultPasswords));
-            }
+        // Store the default passwords if not already in localStorage
+        if (!localStorage.getItem('userPasswords')) {
+            localStorage.setItem('userPasswords', JSON.stringify(defaultPasswords));
         }
+    }
 
-        // Login function
-        function login() {
-            const user = document.getElementById('user-select').value;
-            const password = document.getElementById('password').value;
+    // Login function
+    function login() {
+        const user = document.getElementById('user-select').value;
+        const password = document.getElementById('password').value;
 
-            // Retrieve passwords from localStorage
-            const userPasswords = JSON.parse(localStorage.getItem('userPasswords'));
+        // Retrieve passwords from localStorage
+        const userPasswords = JSON.parse(localStorage.getItem('userPasswords'));
 
-            // Validate password
-            if (userPasswords[user] === password) {
-                // Play background music
-                const music = document.getElementById('background-music');
-                music.play();
-
-                // Redirect to the appropriate page
-                switch (user) {
-                    case 'Developer':
-                        window.location.href = 'gtms.html';
-                        break;
-                    case 'Admin':
-                        window.location.href = 'gtmsAdmin.html';
-                        break;
-                    case 'Supervisor':
-                        window.location.href = 'gtmsSupervisor.html';
-                        break;
-                    case 'Operator':
-                        window.location.href = 'gtmsOperator.html';
-                        break;
-                    case 'Security Guard':
-                        window.location.href = 'gtmsGuard.html';
-                        break;
-                }
-            } else {
-                alert('Invalid password. Please try again.');
-            }
-        }
-
-        // Call the function to load data on page load
-        loadChangePssData();
-
-        // Play music when page loads
-        window.onload = function() {
+        // Validate password
+        if (userPasswords[user] === password) {
+            // Play background music
             const music = document.getElementById('background-music');
-            // Play music after user interaction
-            document.body.addEventListener('click', function() {
-                music.play();
-            });
+            music.play();
+
+            // Redirect to the appropriate page
+            switch (user) {
+                case 'Server':
+                    window.location.href = 'gtms.html';
+                    break;
+                case 'Admin':
+                    window.location.href = 'gtmsAdmin.html';
+                    break;
+                case 'Supervisor':
+                    window.location.href = 'gtmsSupervisor.html';
+                    break;
+                case 'Operator':
+                    window.location.href = 'gtmsOperator.html';
+                    break;
+                case 'Security Guard':
+                    window.location.href = 'gtmsGuard.html';
+                    break;
+            }
+        } else {
+            alert('Invalid password. Please try again.');
         }
-    </script>
+    }
+
+    // Call the function to load data on page load
+    loadChangePssData();
+
+    // Play music when page loads
+    window.onload = function() {
+        const music = document.getElementById('background-music');
+        // Play music after user interaction
+        document.body.addEventListener('click', function() {
+            music.play();
+        });
+
+        // Add "Enter" key functionality
+        document.getElementById('password').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                login(); // Call the login function when Enter is pressed
+            }
+        });
+    };
+   
+ </script>
 
 </body>
 </html>
